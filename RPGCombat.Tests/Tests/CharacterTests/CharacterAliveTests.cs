@@ -29,7 +29,7 @@ namespace RPGCombat.Tests.Tests.CharacterTests
         public void CharacterTakesAnyActionWhileDead_InvalidIfHealedOrDamaged()
         {
             //Arrange
-            var character = new Character() { IsAlive = false, Health = 0 };
+            var character = new Character() { IsAlive = false, Health = 0.0 };
             var enemy = new Character();
             var enemyStartingHealth = enemy.Health;
             //Act
@@ -37,7 +37,7 @@ namespace RPGCombat.Tests.Tests.CharacterTests
             character.HealDamage(character);
             //Assert
             enemy.Health.ShouldBeEquivalentTo(enemyStartingHealth);
-            character.Health.ShouldBeEquivalentTo(0);
+            character.Health.ShouldBeEquivalentTo(0.0);
             character.IsAlive.ShouldBeFalse();
         }
     }
