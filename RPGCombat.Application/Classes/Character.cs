@@ -12,6 +12,7 @@ namespace RPGCombat.Application.Classes
     {
         public Character() { }
         public double DamageDealt { get; set; } = 100;
+        public int MaxRange { get; set; }
 
         public double CalculateDamage(int targetLevel)
         {
@@ -31,23 +32,25 @@ namespace RPGCombat.Application.Classes
 
         public Task DealDamage(Entity target)
         {
+            var totalDamage = CalculateDamage(target.Level);
             if(target.Id != this.Id && this.IsAlive)
             {
-                target.Health -= CalculateDamage(target.Level);
+                target.Health -= totalDamage;
                 target.IsAlive = target.Health <= 0 ? false : true;
+                return Task.FromResult($"Dealt {totalDamage} to {nameof(target)}");
             }
-            
-            return Task.CompletedTask;
+
+            return Task.FromResult($"Unable to Damage {nameof(target)}");
         }
 
-        public Task HealDamage(Entity target)
+        public Task<string> HealDamage(Entity target)
         {
             if(target.IsAlive && target.Id == this.Id)
             {
                 target.Health += 100;
-                return Task.CompletedTask;
+                return Task.FromResult($" {nameof(target)} healed {100}");
             }
-            return Task.CompletedTask;
+            return Task.FromResult($"Unable to Heal {nameof(target)}");
         }
     }
 }

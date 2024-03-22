@@ -9,8 +9,8 @@ namespace RPGCombat.Application.Contracts
 {
     public interface ICharacter
     {
-        public Task DealDamage(Entity target);
-        public Task HealDamage(Entity target);
+        public Task<string> DealDamage(Entity target);
+        public Task<string> HealDamage(Entity target);
         public double CalculateDamage(int targetLevel);
     }
 }

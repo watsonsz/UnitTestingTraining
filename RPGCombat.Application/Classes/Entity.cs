@@ -20,5 +20,6 @@ namespace RPGCombat.Application.Classes
         public int Level { get; set; }
         public double Health { get; set; }
         public bool IsAlive { get; set; }
+        public int[] Location { get; set; }
     }
 }
