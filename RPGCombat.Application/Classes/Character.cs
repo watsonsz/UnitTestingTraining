@@ -107,6 +107,33 @@ namespace RPGCombat.Application.Classes
             return Task.FromResult(false);
         }
 
+        public Task JoinFaction(Faction faction)
+        {
+            if (faction == this.Factions.FirstOrDefault(q => q.Id == faction.Id))
+            {
+               return Task.CompletedTask;
+            }
+            else
+            {
+                Factions.Add(faction);
+                return Task.CompletedTask;
+            }
+
+        }
+
+        public Task LeaveFaction(Faction faction)
+        {
+            if (faction == this.Factions.FirstOrDefault(q => q.Id == faction.Id))
+            {
+                Factions.Remove(faction);
+                return Task.CompletedTask;
+            }
+            else
+            {
+                return Task.CompletedTask;
+            }
+        }
+
         #endregion
     }
 }

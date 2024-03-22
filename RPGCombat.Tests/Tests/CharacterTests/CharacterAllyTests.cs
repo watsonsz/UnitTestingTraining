@@ -40,6 +40,31 @@ namespace RPGCombat.Tests.Tests.CharacterTests
 
             isAlly.ShouldBeFalse();
         }
+
+        [Fact]
+        public void JoinFaction_GivenFactionNotMemberOf_FactionAddedToList()
+        {
+            var faction = new Faction() {Id = Guid.NewGuid(), Name = "The Mad Legion" };
+
+            var otherFaction = new Faction() { Name = "Winged Hussars", Id = Guid.NewGuid() };
+
+            _character.Factions.ShouldNotContain(faction);
+            _character.JoinFaction(otherFaction);
+            _character.JoinFaction(faction);
+            _character.Factions.ShouldContain(faction);
+        }
+
+        [Fact]
+        public void LeaveFaction_GivenFaction_FactionRemovedFromList()
+        {
+            var faction = new Faction() { Id = Guid.NewGuid(), Name = "The Mad Legion" };
+            _character.JoinFaction(faction);
+
+            _character.Factions.ShouldContain(faction);
+
+            _character.LeaveFaction(faction);
+            _character.Factions.ShouldNotContain(faction);
+        }
     }
 
 

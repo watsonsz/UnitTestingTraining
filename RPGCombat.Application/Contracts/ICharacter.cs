@@ -18,5 +18,7 @@ namespace RPGCombat.Application.Contracts
         public Task<string> DealDamage(IBaseClass target);
         public Task<string> HealDamage(ICharacter target);
         public double CalculateDamage(int targetLevel);
+        public Task JoinFaction(Faction faction);
+        public Task LeaveFaction(Faction faction);
     }
 }
