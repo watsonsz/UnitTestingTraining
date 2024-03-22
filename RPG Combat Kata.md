@@ -37,6 +37,8 @@ This is a fun kata that has the programmer building simple combat rules, as for 
     - If the target is 5 or more Levels above the attacker, Damage is reduced by 50%
     - If the target is 5 or more Levels below the attacker, Damage is increased by 50%
 
+
+
 ## Iteration Three ##
 
 1. Characters have an attack Max Range.

@@ -1,4 +1,5 @@
 ﻿using RPGCombat.Application.Classes;
+using RPGCombat.Application.Contracts;
 using Shouldly;
 using System;
 using System.Collections.Generic;
@@ -10,46 +11,60 @@ namespace RPGCombat.Tests.Tests.CharacterTests
 {
     public class CharacterDamageTests
     {
+        private readonly ICharacter _character;
+        private readonly ICharacter _enemy;
+
+        public CharacterDamageTests()
+        {
+            this._character = new MeleeCharacter() { XYLocation = [2, 1] };
+            _enemy = new RangeCharacter() { XYLocation = [2, 3] };
+        }
         [Fact]
-        public void CharacterDealsDamageToSelf_InvalidIfDamage()
+        public void CharacterDealsDamageToSelf_InvalidIfCharacterHealthDecreased()
         {
             //Arrange
-            var character = new Character();
-            var characterStartingHealth = character.Health;
+            var characterStartingHealth = _character.Health;
             //Act
-            character.DealDamage(character);
+            _character.DealDamage(_character);
             //Assert
-            character.Health.ShouldBe(characterStartingHealth);
-            character.IsAlive.ShouldBeTrue();
+            _character.Health.ShouldBe(characterStartingHealth);
+            _character.IsAlive.ShouldBeTrue();
         }
         [Fact]
-        public void CharacterDealsDamageToEnemy_InvalidIfNoDamage()
+        public void CharacterDealsDamageToEnemy_InvalidIfEnemyHealthNotDecreased()
         {
             //Arrange
-            var character = new Character();
-            var enemy = new Character();
-            var enemyStartingHealth = enemy.Health;
+            var enemyStartingHealth = _enemy.Health;
             //Act
-            character.DealDamage(enemy);
+            _character.DealDamage(_enemy);
             //Assert
-            enemy.Health.ShouldBeLessThan(enemyStartingHealth);
-            enemy.IsAlive.ShouldBeTrue();
+            _enemy.Health.ShouldBeLessThan(enemyStartingHealth);
+            _enemy.IsAlive.ShouldBeTrue();
         }
         [Fact]
-        public void CharacterDealsDamageToLowerLevelEnemy_InvalidIfDamageNotIncreased()
+        public void CharacterDealsDamageToLowerLevelEnemy_InvalidIfDamageDealtNotIncreased()
         {
-            var character = new Character() { Level = 5 };
-            var damage = character.CalculateDamage(1);
+            _character.Level = 5 ;
+            var damage = _character.CalculateDamage(1);
 
-            damage.ShouldBeGreaterThan(character.DamageDealt);
+            damage.ShouldBeGreaterThan(_character.Damage);
         }
         [Fact]
-        public void CharacterDealsDamageToHigherLevelEnemy_InvalidIfDamageNotDecreased()
+        public void CharacterDealsDamageToHigherLevelEnemy_InvalidIfDamageDealtNotDecreased()
         {
-            var character = new Character() { Level = 1 };
-            var damage = character.CalculateDamage(6);
+            _character.Level = 1;
+            var damage = _character.CalculateDamage(6);
 
-            damage.ShouldBeLessThan(character.DamageDealt);
+            damage.ShouldBeLessThan(_character.Damage);
+        }
+
+        [Fact]
+        public void CharacterAttemptsDamageOnOutOfRangeEnemey_InvalidIfEnemyDamaged()
+        {
+            _enemy.XYLocation = [20, 10];
+            var enemyStartingHealth = _enemy.Health;
+            _character.DealDamage(_enemy);
+            _enemy.Health.ShouldBeEquivalentTo(enemyStartingHealth);
         }
     }
 }

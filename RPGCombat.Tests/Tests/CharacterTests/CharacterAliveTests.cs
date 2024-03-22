@@ -1,4 +1,5 @@
 ﻿using RPGCombat.Application.Classes;
+using RPGCombat.Application.Contracts;
 using Shouldly;
 using System;
 using System.Collections.Generic;
@@ -10,35 +11,41 @@ namespace RPGCombat.Tests.Tests.CharacterTests
 {
     public class CharacterAliveTests
     {
-
+        public ICharacter _character;
+        public ICharacter _enemy;
+        public CharacterAliveTests()
+        {
+            _character = new MeleeCharacter() {XYLocation = [2,1] };
+            _enemy = new RangeCharacter() { XYLocation = [2, 3] };
+            
+        }
         [Fact]
-        public void CharacterKillsEnemy_InvalidIfAlive()
+        public void CharacterKillsEnemy_InvalidIfEnemyStillAlive()
         {
             //Arrange
-            var character = new Character() { DamageDealt = 1000 };
-            var enemy = new Character();
-            var enemyStartingHealth = enemy.Health;
+            _character.Damage = 1000;
+            var enemyStartingHealth = _enemy.Health;
             //Act
-            character.DealDamage(enemy);
+            _character.DealDamage(_enemy);
             //Assert
-            enemy.Health.ShouldBeLessThan(enemyStartingHealth);
-            enemy.IsAlive.ShouldBeFalse();
+            _enemy.Health.ShouldBeLessThan(enemyStartingHealth);
+            _enemy.IsAlive.ShouldBeFalse();
         }
 
         [Fact]
-        public void CharacterTakesAnyActionWhileDead_InvalidIfHealedOrDamaged()
+        public void CharacterTakesAnyActionWhileDead_InvalidIfCharacterHealedOrDealtDamaged()
         {
             //Arrange
-            var character = new Character() { IsAlive = false, Health = 0.0 };
-            var enemy = new Character();
-            var enemyStartingHealth = enemy.Health;
+            _character.Health = 0;
+            _character.IsAlive = false;
+            var enemyStartingHealth = _enemy.Health;
             //Act
-            character.DealDamage(enemy);
-            character.HealDamage(character);
+            _character.DealDamage(_enemy);
+            _character.HealDamage(_character);
             //Assert
-            enemy.Health.ShouldBeEquivalentTo(enemyStartingHealth);
-            character.Health.ShouldBeEquivalentTo(0.0);
-            character.IsAlive.ShouldBeFalse();
+            _enemy.Health.ShouldBeEquivalentTo(enemyStartingHealth);
+            _character.Health.ShouldBeEquivalentTo(0.0);
+            _character.IsAlive.ShouldBeFalse();
         }
     }
 }

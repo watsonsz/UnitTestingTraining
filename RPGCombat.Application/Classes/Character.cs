@@ -1,39 +1,39 @@
 ﻿using RPGCombat.Application.Contracts;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace RPGCombat.Application.Classes
 {
-    public class Character : Entity, ICharacter
+    public class Character:Entity, ICharacter
     {
-        public Character() { }
-        public double DamageDealt { get; set; } = 100;
+        public double Damage { get; set; } = 100;
+        public double Healing { get; set; } = 100;
         public int MaxRange { get; set; }
 
         public double CalculateDamage(int targetLevel)
         {
-            if(targetLevel >= this.Level + 5)
+            if (targetLevel >= this.Level + 5)
             {
-                return DamageDealt * 0.5;
+                return Damage * 0.5;
             }
-            else if(targetLevel < this.Level + 5)
+            else if (targetLevel < this.Level + 5)
             {
-                return DamageDealt * 2;
+                return Damage * 2;
             }
             else
             {
-                return DamageDealt;
+                return Damage;
             }
         }
 
-        public Task<string> DealDamage(Entity target)
+        public Task<string> DealDamage(IEntity target)
         {
             var totalDamage = CalculateDamage(target.Level);
-            if(target.Id != this.Id && this.IsAlive)
+            var validTarget = (target.Id != this.Id && this.IsAlive);
+            if (validTarget && IsInRange(target.XYLocation).Result)
             {
                 target.Health -= totalDamage;
                 target.IsAlive = target.Health <= 0 ? false : true;
@@ -43,14 +43,27 @@ namespace RPGCombat.Application.Classes
             return Task.FromResult($"Unable to Damage {nameof(target)}");
         }
 
-        public Task<string> HealDamage(Entity target)
+        public Task<string> HealDamage(IEntity target)
         {
-            if(target.IsAlive && target.Id == this.Id)
+            bool validTarget = (target.IsAlive && target.Id == this.Id);
+            if (validTarget)
             {
-                target.Health += 100;
-                return Task.FromResult($" {nameof(target)} healed {100}");
+                target.Health += Healing;
+                return Task.FromResult($" {nameof(target)} healed {Healing}");
             }
             return Task.FromResult($"Unable to Heal {nameof(target)}");
+        }
+
+
+        public Task<bool> IsInRange(int[] targetXYLocation)
+        {
+            var xLocationDifference = Math.Abs(targetXYLocation[0] - this.XYLocation[0]);
+            var yLocationDifference = Math.Abs(targetXYLocation[1] - this.XYLocation[1]);
+            if(xLocationDifference > MaxRange || yLocationDifference > MaxRange)
+            {
+                return Task.FromResult(false);
+            }
+            return Task.FromResult(true);
         }
     }
 }

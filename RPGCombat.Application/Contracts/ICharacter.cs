@@ -7,10 +7,14 @@ using System.Threading.Tasks;
 
 namespace RPGCombat.Application.Contracts
 {
-    public interface ICharacter
+    public interface ICharacter: IEntity
     {
-        public Task<string> DealDamage(Entity target);
-        public Task<string> HealDamage(Entity target);
+        public double Damage { get; set; }
+        public double Healing { get; set; }
+        public int MaxRange { get; set; }
+        public Task<bool> IsInRange(int[] targetXYLocation);
+        public Task<string> DealDamage(IEntity target);
+        public Task<string> HealDamage(IEntity target);
         public double CalculateDamage(int targetLevel);
     }
 }

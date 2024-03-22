@@ -1,4 +1,5 @@
 ﻿using RPGCombat.Application.Classes;
+using RPGCombat.Application.Contracts;
 using Shouldly;
 using System;
 using System.Collections.Generic;
@@ -10,34 +11,39 @@ namespace RPGCombat.Tests.Tests.CharacterTests
 {
     public class CharacterHealingTests
     {
-        [Fact]
-        public void CharacterHealsSelf_InvalidIfNotHealed()
+        private readonly ICharacter _character;
+        private readonly ICharacter _enemy;
+
+        public CharacterHealingTests()
         {
-            //Arrange
-            var character = new Character();
-            var enemy = new Character();
-            //Act
-            enemy.DealDamage(character);
-            var characterCurrentHealth = character.Health;
-            //Assert
-            character.HealDamage(character);
-            character.Health.ShouldBeGreaterThan(characterCurrentHealth);
-            character.IsAlive.ShouldBeTrue();
+            _character = new MeleeCharacter() { XYLocation = [2, 1] };
+            _enemy = new RangeCharacter() { XYLocation = [2, 3] };
         }
 
         [Fact]
-        public void CharacterHealsEnemy_InvalidIfHealed()
+        public void CharacterHealsSelf_InvalidIfHealthNotIncreased()
+        {
+            //Act
+            _enemy.DealDamage(_character);
+            var characterCurrentHealth = _character.Health;
+            //Assert
+            _character.HealDamage(_character);
+
+            _character.Health.ShouldBeGreaterThan(characterCurrentHealth);
+            _character.IsAlive.ShouldBeTrue();
+        }
+
+        [Fact]
+        public void CharacterHealsEnemy_InvalidIfEnemyHealthIncreased()
         {
             //Arrange
-            var character = new Character();
-            var enemy = new Character();
-            var enemyStartingHealth = enemy.Health;
+            var enemyStartingHealth = _enemy.Health;
             //Act
-            character.DealDamage(enemy);
-            character.HealDamage(enemy);
+            _character.DealDamage(_enemy);
+            _character.HealDamage(_enemy);
             //Assert
-            enemy.Health.ShouldBeLessThan(enemyStartingHealth);
-            enemy.IsAlive.ShouldBeTrue();
+            _enemy.Health.ShouldBeLessThan(enemyStartingHealth);
+            _enemy.IsAlive.ShouldBeTrue();
         }
     }
 }
