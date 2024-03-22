@@ -20,7 +20,7 @@ namespace RPGCombat.Tests.Tests.CharacterTests
             
         }
         [Fact]
-        public void CharacterKillsEnemy_InvalidIfEnemyStillAlive()
+        public void Alive_GivenFatalDamageToEnemy_SetsEnemyIsAlivetoFalse()
         {
             //Arrange
             _character.Damage = 1000;
@@ -33,7 +33,7 @@ namespace RPGCombat.Tests.Tests.CharacterTests
         }
 
         [Fact]
-        public void CharacterTakesAnyActionWhileDead_InvalidIfCharacterHealedOrDealtDamaged()
+        public void AllMethods_GivenIsAliveFalse_EnemyDamageandCharacterHealthUnaffected()
         {
             //Arrange
             _character.Health = 0;

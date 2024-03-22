@@ -21,7 +21,7 @@ namespace RPGCombat.Tests.Tests.CharacterTests
         }
 
         [Fact]
-        public void CharacterHealsSelf_InvalidIfHealthNotIncreased()
+        public void HealDamage_GivenSelf_HealthIncreased()
         {
             //Act
             _enemy.DealDamage(_character);
@@ -34,7 +34,7 @@ namespace RPGCombat.Tests.Tests.CharacterTests
         }
 
         [Fact]
-        public void CharacterHealsEnemy_InvalidIfEnemyHealthIncreased()
+        public void HealDamage_GivenEnemy_EnemyHealthNotAffected()
         {
             //Arrange
             var enemyStartingHealth = _enemy.Health;

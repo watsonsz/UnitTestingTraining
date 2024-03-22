@@ -7,16 +7,14 @@ using System.Threading.Tasks;
 
 namespace RPGCombat.Application.Classes
 {
-    public class Entity : IEntity
+    public abstract class Entity : BaseClass, IEntity
     {
         public Entity()
         {
-            Id = Guid.NewGuid();
+            Health = 1000;
         }
-        public Guid Id { get; set; }
         public int Level { get; set; } = 1;
-        public double Health { get; set; } = 1000;
         public bool IsAlive { get; set; } = true;
-        public int[] XYLocation { get; set; }
+        
     }
 }

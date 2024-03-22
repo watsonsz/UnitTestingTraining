@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace RPGCombat.Application.Contracts
 {
-    public interface IEntity: IBaseClass
+    public interface IBaseClass
     {
-        public int Level { get; set; }
-        public bool IsAlive { get; set; }
-        
+        public Guid Id { get; set; }
+        public double Health { get; set; }
+        public int[] XYLocation { get; set; }
     }
 }
