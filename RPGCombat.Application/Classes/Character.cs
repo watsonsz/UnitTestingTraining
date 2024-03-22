@@ -30,7 +30,7 @@ namespace RPGCombat.Application.Classes
             }
         }
 
-        public Task DealDamage(Entity target)
+        public Task<string> DealDamage(Entity target)
         {
             var totalDamage = CalculateDamage(target.Level);
             if(target.Id != this.Id && this.IsAlive)
