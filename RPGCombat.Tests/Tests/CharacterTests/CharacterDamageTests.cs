@@ -83,5 +83,24 @@ namespace RPGCombat.Tests.Tests.CharacterTests
             ally.Health.ShouldBeEquivalentTo(allyStartingHealth);
         }
 
+        [Fact]
+        public void DealDamage_GivenStaticObject_ObjectHealthAffected()
+        {
+            var newThing = new StaticObject() { XYLocation=[2,2] };
+            var thingsHealth = newThing.Health;
+            _character.DealDamage(newThing);
+            newThing.Health.ShouldBeLessThan(thingsHealth);
+
+        }
+        [Fact]
+        public void DealDamage_GivenStaticObjectWithLowHealth_IsDestroyedIsTrue()
+        {
+            var tree = new StaticObject() { XYLocation = [2, 2], Name = "Tree" };
+            tree.Health = 2;
+            tree.IsDestroyed.ShouldBeFalse();
+            _character.DealDamage(tree);
+            tree.IsDestroyed.ShouldBeTrue();
+        }
+       
     }
 }

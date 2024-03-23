@@ -13,6 +13,8 @@ namespace RPGCombat.Application.Classes
         {
             MaxRange = 2;
         }
+
+        
     }
 
     public class RangeCharacter : Character

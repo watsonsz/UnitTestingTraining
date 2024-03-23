@@ -9,7 +9,7 @@ namespace RPGCombat.Application.Contracts
     public interface IBaseClass
     {
         public Guid Id { get; set; }
-        public double Health { get; set; }
+        public abstract double Health { get; set; }
         public int[] XYLocation { get; set; }
     }
 }

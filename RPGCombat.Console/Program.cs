@@ -5,7 +5,7 @@ internal class Program
 {
     private static void Main(string[] args)
     {
-        Character character = new RangeCharacter() { Damage = 2000, XYLocation = [1, 1] };
+        Character character = new RangeCharacter() {XYLocation = [1, 1] };
         Character enemy = new MeleeCharacter() { XYLocation = [2, 2] };
         Console.WriteLine(enemy.IsAlive);
         character.DealDamage(enemy);

@@ -8,15 +8,30 @@ using System.Threading.Tasks;
 
 namespace RPGCombat.Application.Classes
 {
-    public abstract class Character:Entity, ICharacter
+    public abstract class Character:BaseClass,ICharacter
     {
         public Character()
         {
+            _health = 1000;
             Factions = new List<Faction>();
+        }
+        private double _health;
+        public override double Health { get => _health;
+            set
+            {
+                _health = value;
+                if (_health <= 0)
+                {
+                    IsAlive = false;
+                }
+            } 
         }
         public double Damage { get; set; } = 100;
         public double Healing { get; set; } = 100;
         public int MaxRange { get; set; }
+        public int Level { get; set; } = 1;
+        public bool IsAlive { get; set; } = true;
+
         public List<Faction> Factions { get; set; }
 
         public Task<string> DealDamage(IBaseClass target)
@@ -40,11 +55,6 @@ namespace RPGCombat.Application.Classes
             if (validTarget && IsInRange(target.XYLocation).Result)
             {
                 target.Health -= totalDamage;
-                if (isCharacter) { 
-
-                    ICharacter currentTarget = target as ICharacter;
-                    currentTarget.IsAlive = target.Health <= 0 ? false : true;
-                }
                 
                 return Task.FromResult($"Dealt {totalDamage} to {nameof(target)}");
             }
@@ -52,9 +62,15 @@ namespace RPGCombat.Application.Classes
             return Task.FromResult($"Unable to Damage {nameof(target)}");
         }
 
-        public Task<string> HealDamage(ICharacter target)
+        public Task<string> HealDamage(IBaseClass target)
         {
-            bool validTarget = target.IsAlive && (target.Id == this.Id || target.IsAlly(target.Factions).Result);
+            bool validTarget = false;
+            var isCharacter = target.GetType().GetInterfaces().Contains(typeof(ICharacter)); if (isCharacter)
+            {
+                ICharacter currentTarget = (target as ICharacter);
+                validTarget = currentTarget.IsAlive && (currentTarget.Id == this.Id || currentTarget.IsAlly(currentTarget.Factions).Result);
+            }
+            
             if (validTarget)
             {
                 target.Health += Healing;

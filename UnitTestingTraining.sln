@@ -14,11 +14,16 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RPGCombatKata", "RPGCombatK
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RPGCombatKata", "RPGCombatKata", "{8E2DAE0F-298C-4A07-B43B-C90492EA8BA0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RPGCombat.Application", "RPGCombat.Application\RPGCombat.Application.csproj", "{20B97233-75AA-40B6-A707-1A6B460D957E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RPGCombat.Application", "RPGCombat.Application\RPGCombat.Application.csproj", "{20B97233-75AA-40B6-A707-1A6B460D957E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RPGCombat.Console", "RPGCombat.Console\RPGCombat.Console.csproj", "{7BAE46B7-3C17-45A7-ADEF-692EC292CD0C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RPGCombat.Console", "RPGCombat.Console\RPGCombat.Console.csproj", "{7BAE46B7-3C17-45A7-ADEF-692EC292CD0C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RPGCombat.Tests", "RPGCombat.Tests\RPGCombat.Tests.csproj", "{8B506B56-6817-4CFB-8E33-016A5AF4F12D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RPGCombat.Tests", "RPGCombat.Tests\RPGCombat.Tests.csproj", "{8B506B56-6817-4CFB-8E33-016A5AF4F12D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ZombieSurvivorKata", "ZombieSurvivorKata", "{0E1A67A9-6E14-442C-A6E4-857D4B1CC853}"
+	ProjectSection(SolutionItems) = preProject
+		ZombieSurvivorKata.md = ZombieSurvivorKata.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -48,6 +53,7 @@ Global
 		{20B97233-75AA-40B6-A707-1A6B460D957E} = {6C162BC2-D7BE-427E-B3C6-F8A49A3AFD73}
 		{7BAE46B7-3C17-45A7-ADEF-692EC292CD0C} = {6C162BC2-D7BE-427E-B3C6-F8A49A3AFD73}
 		{8B506B56-6817-4CFB-8E33-016A5AF4F12D} = {8E2DAE0F-298C-4A07-B43B-C90492EA8BA0}
+		{0E1A67A9-6E14-442C-A6E4-857D4B1CC853} = {881E555C-75FD-40A0-B853-D17A5AE0E459}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7A03D66B-DA61-4DA1-AEDF-0C3958748303}
