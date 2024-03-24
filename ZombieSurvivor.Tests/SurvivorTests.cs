@@ -1,5 +1,7 @@
 using Shouldly;
 using ZombieSurvivor.Application.Classes;
+using ZombieSurvivor.Application.Contracts;
+using ZombieSurvivor.Application.Exceptions;
 
 namespace ZombieSurvivor.Tests
 {
@@ -21,8 +23,8 @@ namespace ZombieSurvivor.Tests
             survivor.TakeAction(Application.Contracts.ISurvivor.ActionTypes.Attack);
             survivor.TakeAction(Application.Contracts.ISurvivor.ActionTypes.Hide);
             survivor.TakeAction(Application.Contracts.ISurvivor.ActionTypes.Heal);
-            survivor.TakeAction(Application.Contracts.ISurvivor.ActionTypes.Attack);
-            survivor.ActionsTaken.ShouldBeEquivalentTo(3);
+            Should.Throw<MaximumNumberofActions>(()=> survivor.TakeAction(ISurvivor.ActionTypes.Heal));
+            
            
         }
         [Fact]
@@ -33,6 +35,78 @@ namespace ZombieSurvivor.Tests
             survivor.isDead.ShouldBeFalse();
             survivor.Wounds = 2;
             survivor.isDead.ShouldBeTrue();
+        }
+
+        [Fact]
+        public void EquipItem_GivenItem_HandEquipedHasItem()
+        {
+            Survivor survivor = new Survivor();
+            Equipment equipment = new Equipment() { Name = "Shovel" };
+            survivor.ReserveEquipment.Add(equipment);
+
+            survivor.LeftHandEquipped.ShouldBeNull();
+            survivor.EquipItem(ISurvivor.Hands.LeftHand, equipment);
+            
+            survivor.LeftHandEquipped.ShouldNotBeNull();
+        }
+        [Fact]
+        public void PickUpItem_GivenItem_ReserveEquipmentContainsItem()
+        {
+            Survivor survivor = new Survivor();
+            Equipment equipment = new Equipment() { Name = "Shovel" };
+            survivor.PickUpItem(equipment);
+            survivor.ReserveEquipment.ShouldContain(equipment);
+        }
+        [Fact]
+        public void PickUpItem_GivenItemAndFullBag_ShouldThrowFullBagException()
+        {
+            Survivor survivor = new Survivor()
+            {
+                ReserveEquipment = new List<Equipment>
+                {
+                    new Equipment()
+                    {
+                        Name = "Pickaxe"
+                    },
+                    new Equipment()
+                    {
+                        Name = "Sandwich"
+                    },
+                    new Equipment()
+                    {
+                        Name = "Rope"
+                    }
+                }
+            };
+            Equipment equipment = new Equipment() { Name = "Shovel" };
+            Should.Throw<FullBag>(() => survivor.PickUpItem(equipment));
+        }
+        [Fact]
+        public void DiscardItem_GivenIndexofItemtoDiscard_ItemRemovedFromReserveEquipment()
+        {
+            Survivor survivor = new Survivor()
+            {
+                ReserveEquipment = new List<Equipment>
+                {
+                    new Equipment()
+                    {
+                        Name = "Pickaxe"
+                    },
+                    new Equipment()
+                    {
+                        Name = "Sandwich"
+                    },
+                    new Equipment()
+                    {
+                        Name = "Rope"
+                    }
+                }
+            };
+
+            var equipment = survivor.ReserveEquipment[1];
+
+            survivor.DiscardItem(1);
+            survivor.ReserveEquipment.ShouldNotContain(equipment);
         }
     }
 }
