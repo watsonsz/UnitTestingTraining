@@ -21,17 +21,24 @@ namespace ZombieSurvivor.Application.Contracts
 
         public enum ActionTypes
                 {
-                    Attack,
-                    Hide,
-                    Heal
+                    PickUp,
+                    Equip
                 }
         public enum Hands
         {
             LeftHand,
             RightHand
         }
+
+        public enum Levels
+        {
+            Blue = 0,
+            Yellow = 6,
+            Orange = 18,
+            Red = 42
+
+        }
         #region Methods
-            public Task TakeAction(ActionTypes type);
             public Task EquipItem(Hands Hand, Equipment equipment);
             public Task PickUpItem(Equipment equipment);
             public Task DiscardItem(int ListIndex);
