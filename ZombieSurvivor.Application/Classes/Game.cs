@@ -20,7 +20,11 @@ namespace ZombieSurvivor.Application.Classes
             GameHistory.Add($"Began Game at {DateTime.Now}");
             WeakReferenceMessenger.Default.Register<SurvivorMessage>(this, (r, m) =>
             {
-                GameHistory.Add(m.Value);
+                if (Survivors.FirstOrDefault(q => q.Id == m.SenderId) != null)
+                {
+                    GameHistory.Add(m.Message);
+                }
+                
             });
         }
         public Guid Id { get; set; }
@@ -87,7 +91,7 @@ namespace ZombieSurvivor.Application.Classes
             }
             GameOver = true;
             GameHistory.Add($"Game has ended at {DateTime.Now}");
-            throw new GameOver();
+            throw new GameOver(GameHistory);
         }
        
         #endregion

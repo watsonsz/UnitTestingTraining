@@ -8,6 +8,11 @@ namespace ZombieSurvivor.Application.Exceptions
 {
     public class GameOver:Exception
     {
-        public GameOver(string message = "All Survivors have Died: Game Over"):base(message) { }
+        public GameOver(List<string> history,string message = "All Survivors have Died: Game Over") : base(message)
+        {
+            History = history;
+        }
+
+        public List<string> History { get; set; }
     }
 }

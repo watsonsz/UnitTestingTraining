@@ -84,5 +84,25 @@ namespace ZombieSurvivor.Tests
             game.Survivors[0].isDead.ShouldBeTrue();
             game.GameLevel.ShouldBe(ISurvivor.Levels.Blue);
         }
+
+        [Fact]
+        public void GameHistory_GivenFiveEvents_GameHistoryCountIsFive()
+        {
+            try
+            {
+                var game = new Game();
+                game.AddSurvivor(new Survivor() { Name = "Zack" });
+                game.Survivors[0].PickUpItem(new Equipment() { Name = "Shovel" });
+                game.Survivors[0].Experience = 6;
+                game.Survivors[0].EquipItem(ISurvivor.Hands.LeftHand, game.Survivors[0].ReserveEquipment[0]);
+                game.Survivors[0].Wounds = 1;
+                game.Survivors[0].Wounds = 2;
+            }
+            catch(GameOver ex)
+            {
+                ex.History.Count.ShouldBe(9);
+            }
+            
+        }
     }
 }

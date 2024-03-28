@@ -9,8 +9,12 @@ namespace ZombieSurvivor.Application.Messages
 {
     public class SurvivorMessage : ValueChangedMessage<string>
     {
-        public SurvivorMessage(string value) : base(value)
+        public SurvivorMessage(Guid senderId, string value) : base(value)
         {
+            SenderId = senderId;
+            Message = value;
         }
+        public Guid SenderId { get; set; }
+        public string Message { get; set; }
     }
 }

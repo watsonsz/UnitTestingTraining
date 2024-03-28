@@ -1,10 +1,12 @@
-﻿using System;
+﻿using CommunityToolkit.Mvvm.Messaging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ZombieSurvivor.Application.Contracts;
 using ZombieSurvivor.Application.Exceptions;
+using ZombieSurvivor.Application.Messages;
 
 namespace ZombieSurvivor.Application.Classes
 {
@@ -15,8 +17,10 @@ namespace ZombieSurvivor.Application.Classes
             ReserveEquipment = new List<Equipment>();
             _experience = 0;
             Level = ISurvivor.Levels.Blue;
+            Id = Guid.NewGuid();
         }
-        
+
+        public Guid Id { get; set; }
         public const int MAX_ACTIONS_PER_TURN = 3;
         public const int MAX_WOUNDS = 2;
         public int Reserve_Equipment_Slots { get; set; } = 3;
@@ -36,16 +40,21 @@ namespace ZombieSurvivor.Application.Classes
             { 
                 if(!isDead)
                 {
-                    if (_wounds < _wounds + value)
+                    if (_wounds < value)
                     {
                         ReduceEquipmentSlots();
+                        
                     }
                     _wounds = value;
-
+                    
                     if (_wounds >= MAX_WOUNDS)
                     {
                         isDead = true;
                         OnHasDied();
+                    }
+                    else
+                    {
+                        WeakReferenceMessenger.Default.Send(new SurvivorMessage(Id,$"{Name} was wounded: Wounds:{_wounds}"));
                     }
                 }
             }
@@ -53,7 +62,7 @@ namespace ZombieSurvivor.Application.Classes
         public ISurvivor.Levels Level { get; set; }
 
         #region PrivateMembers
-        private int _wounds;
+        private int _wounds = 0;
         private int _experience;
         private int _experienceThreshold = 6;
         #endregion
@@ -92,11 +101,13 @@ namespace ZombieSurvivor.Application.Classes
                         PickUpItem(LeftHandEquipped);
                         LeftHandEquipped = null;
                         LeftHandEquipped = equipment;
+                        
                     }
                     else
                     {
                         LeftHandEquipped = equipment;
                     }
+
                 }
                 else
                 {
@@ -111,16 +122,18 @@ namespace ZombieSurvivor.Application.Classes
                     {
                         RightHandEquipped = equipment;
                     }
+                    
                 }
+                WeakReferenceMessenger.Default.Send(new SurvivorMessage(Id,$"{Name} Equipped {equipment.Name} to their {Hand}"));
                 ReserveEquipment.Remove(equipment);
-                return Task.CompletedTask;
                 ActionsTaken++;
+                return Task.CompletedTask;
+               
             }
             else
             {
                 throw new MaximumNumberofActions();
             }
-            
             return Task.CompletedTask;
             
         }
@@ -133,6 +146,7 @@ namespace ZombieSurvivor.Application.Classes
                 {
                     throw new FullBag();
                 }
+                WeakReferenceMessenger.Default.Send(new SurvivorMessage(Id, $"{Name} Picked up {equipment.Name}"));
                 ReserveEquipment.Add(equipment);
                 ActionsTaken++;
             }
