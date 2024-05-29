@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using ZombieSurvivor.Application.Classes;
@@ -86,7 +87,7 @@ namespace ZombieSurvivor.Tests
         }
 
         [Fact]
-        public void GameHistory_GivenFiveEvents_GameHistoryCountIsFive()
+        public void GameHistory_GivenSevenEvents_GameHistoryCountIsTen()
         {
             try
             {
@@ -100,7 +101,32 @@ namespace ZombieSurvivor.Tests
             }
             catch(GameOver ex)
             {
-                ex.History.Count.ShouldBe(9);
+                ex.History.Count.ShouldBe(10);
+            }
+            
+        }
+
+        [Theory]
+        [InlineData(6, "+1 Action")]
+        [InlineData(18, "1 Free Move Action")]
+        [InlineData(42, "Hoard")]
+        [InlineData(60, "1 Free Move Action")]
+        [InlineData(84, "Hoard")]
+        [InlineData(102, "1 Free Move Action")]
+        [InlineData(126, "Hoard")]
+        public void GameHistory_GivenLevelUps_GameHistoryContainsString(int experience, string checkString)
+        {
+            try
+            {
+                var game = new Game();
+                game.AddSurvivor(new Survivor() { Name = "Zack" });
+                game.Survivors[0].Experience = experience;
+                game.Survivors[0].Wounds = 1;
+                game.Survivors[0].Wounds = 2;
+            }
+            catch (GameOver ex)
+            {
+                ex.History[4].ShouldContain(checkString);
             }
             
         }

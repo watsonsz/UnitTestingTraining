@@ -26,6 +26,18 @@ namespace ZombieSurvivor.Application.Classes
                 }
                 
             });
+            WeakReferenceMessenger.Default.Register<SkillTreeMessage>(this, (r, m) =>
+            {
+                if (Survivors.FirstOrDefault(q => q.Id == m.SenderId) != null)
+                {
+                    var finalMessage = m.Message;
+                    foreach(var skill in m.AvailableSkills)
+                    {
+                        finalMessage += $"\n {skill.Name}: {skill.Description}";
+                    }
+                    GameHistory.Add(finalMessage);
+                }
+            });
         }
         public Guid Id { get; set; }
         public ISurvivor.Levels GameLevel { get; set; }

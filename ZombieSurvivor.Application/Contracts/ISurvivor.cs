@@ -17,6 +17,7 @@ namespace ZombieSurvivor.Application.Contracts
             public List<Equipment> ReserveEquipment { get; set; }
             public abstract Equipment LeftHandEquipped { get; set; }
             public abstract Equipment RightHandEquipped { get; set; }
+        Dictionary<int, Levels> LevelValues { get; set; }
         #endregion
 
         public enum ActionTypes
@@ -38,8 +39,20 @@ namespace ZombieSurvivor.Application.Contracts
             Red = 42
 
         }
+
+        public static Dictionary<int, Levels> levelValues = new Dictionary<int, Levels>
+        {
+            {0, Levels.Blue},
+            {6, Levels.Yellow},
+            {18, Levels.Orange},
+            {42, Levels.Red},
+            {60, Levels.Orange },
+            {84, Levels.Red},
+            {102, Levels.Orange},
+            {126, Levels.Red }
+        };
         #region Methods
-            public Task EquipItem(Hands Hand, Equipment equipment);
+        public Task EquipItem(Hands Hand, Equipment equipment);
             public Task PickUpItem(Equipment equipment);
             public Task DiscardItem(int ListIndex);
         #endregion

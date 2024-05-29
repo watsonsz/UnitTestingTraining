@@ -10,12 +10,13 @@ using ZombieSurvivor.Application.Messages;
 
 namespace ZombieSurvivor.Application.Classes
 {
-    public class Survivor : ISurvivor
+    public class Survivor
     {
         public Survivor()
         {
             ReserveEquipment = new List<Equipment>();
             _experience = 0;
+            SkillTree = new SkillTree();
             Level = ISurvivor.Levels.Blue;
             Id = Guid.NewGuid();
         }
@@ -24,17 +25,19 @@ namespace ZombieSurvivor.Application.Classes
         public const int MAX_ACTIONS_PER_TURN = 3;
         public const int MAX_WOUNDS = 2;
         public int Reserve_Equipment_Slots { get; set; } = 3;
+        public int MoveActions { get; set; } = 0;
         
         public string Name { get; set; }
         public bool isDead { get; set; } = false;
         public int Experience { get => _experience; set
             {
-                _experience = value;
+                _experience += value;
                 CheckForLevelUp(_experience);
             } }
-
-        
-
+        public int ActionsTaken { get; set; } = 0;
+        public List<Equipment>? ReserveEquipment { get; set; }
+        public Equipment? LeftHandEquipped { get; set; }
+        public Equipment? RightHandEquipped { get; set; }
         public int Wounds { get => _wounds; 
             set 
             { 
@@ -60,6 +63,7 @@ namespace ZombieSurvivor.Application.Classes
             }
         }
         public ISurvivor.Levels Level { get; set; }
+        public SkillTree SkillTree { get; set; }
 
         #region PrivateMembers
         private int _wounds = 0;
@@ -80,13 +84,20 @@ namespace ZombieSurvivor.Application.Classes
             LevelledUp?.Invoke(this, new EventArgs());
         }
         #endregion
-        public int ActionsTaken { get; set; } = 0;
-        public List<Equipment>? ReserveEquipment { get; set; }
-        public Equipment? LeftHandEquipped { get; set; }
-        public Equipment? RightHandEquipped { get; set; }
+        
 
         #region Methods
-        
+        public void Move()
+        {
+            if(MoveActions != 0)
+            {
+                MoveActions--;
+            }
+            else
+            {
+                ActionsTaken++;
+            }
+        }
 
         public Task EquipItem(ISurvivor.Hands Hand, Equipment equipment)
         {
@@ -173,25 +184,93 @@ namespace ZombieSurvivor.Application.Classes
         private void CheckForLevelUp(int experience)
         {
 
-            if(experience >= _experienceThreshold)
+            if(experience >= _experienceThreshold && _experienceThreshold != 0)
             {
-                //Level Up
-                this.Level = (ISurvivor.Levels)Enum.ToObject(typeof(ISurvivor.Levels), _experienceThreshold);
+                while(experience > _experienceThreshold)
+                {
+                    _experienceThreshold = SetNewThreshold(_experienceThreshold);
+                }
+                if (this.Level != ISurvivor.Levels.Red && _experienceThreshold <= ((int)ISurvivor.Levels.Red))
+                {
+                    //Level Up
+                    this.Level = (ISurvivor.Levels)Enum.ToObject(typeof(ISurvivor.Levels), _experienceThreshold);
+
+                    OnLevelledUp();
+                }
+                else if (this.Level != ISurvivor.Levels.Red)
+                {
+                    this.Level = ISurvivor.Levels.Red;
+                    OnLevelledUp();
+                }
+                UpdateSkillTree(_experienceThreshold);
                 //Set New Threshold
-                _experienceThreshold = SetNewThreshold(((int)this.Level));
-                OnLevelledUp();
+                
+                
             }
             
         }
 
-        private int SetNewThreshold(int level)
+        private void UpdateSkillTree(int experienceThreshold)
         {
-            var values = Enum.GetValues(typeof(ISurvivor.Levels));
-            foreach (var value in values)
+            foreach (var pair in ISurvivor.levelValues)
             {
-                if (level < (int)value)
+                if (pair.Key == experienceThreshold)
                 {
-                    return (int)value;
+                    if(pair.Value == ISurvivor.Levels.Orange || pair.Value == ISurvivor.Levels.Red)
+                    {
+                        var skills = SkillTree.GetAvailableSkills(pair.Value);
+                        if(skills.Count > 0)
+                        {
+                            WeakReferenceMessenger.Default.Send(new SkillTreeMessage(this.Id, skills, $"{Name} has gained access to the following skills: "));
+                            break;
+                        }
+                        else
+                        {
+                            WeakReferenceMessenger.Default.Send(new SurvivorMessage(this.Id, $"{Name} has no more available skills at the {pair.Value} tier"));
+                            break;
+                        }
+                        
+                    }
+                    if(pair.Value == ISurvivor.Levels.Yellow && SkillTree.YellowSkill.Activated == false)
+                    {
+                        WeakReferenceMessenger.Default.Send(new SurvivorMessage(this.Id, $"{Name} has gained access to skill: ${SkillTree.YellowSkill.Name}: {SkillTree.YellowSkill.Description}"));
+                    }
+                    
+                }
+            }
+        }
+
+        public void ChooseSkill(int Id, ISurvivor.Levels level)
+        {
+            string skillName = string.Empty;
+            if(level == ISurvivor.Levels.Yellow)
+            {
+                SkillTree.YellowSkill.Activated = true;
+            }
+            else if(level == ISurvivor.Levels.Orange)
+            {
+                SkillTree.OrangeSkillList.FirstOrDefault(p=> p.Id == Id).Activated = true;
+                skillName = SkillTree.OrangeSkillList.FirstOrDefault(p => p.Id == Id).Name;
+            }
+            else if (level == ISurvivor.Levels.Red)
+            {
+                SkillTree.RedSkillList.FirstOrDefault(p => p.Id == Id).Activated = true;
+                skillName = SkillTree.RedSkillList.FirstOrDefault(p => p.Id == Id).Name;
+            }
+
+            if(skillName != string.Empty)
+            {
+                WeakReferenceMessenger.Default.Send(new SurvivorMessage(this.Id, $"{Name} has activated {skillName}"));
+            }
+        }
+
+        private int SetNewThreshold(int experienceThreshold)
+        {
+            foreach(var pair in ISurvivor.levelValues)
+            {
+                if(pair.Key > experienceThreshold)
+                {
+                    return pair.Key;
                 }
             }
             return 0;

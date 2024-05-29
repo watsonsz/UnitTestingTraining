@@ -119,5 +119,7 @@ namespace ZombieSurvivor.Tests
             survivor.Level.ShouldBe(ISurvivor.Levels.Red);
 
         }
+
+        
     }
 }
