@@ -39,7 +39,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SudokuSolver.Program", "Sud
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SudokuValidator", "SudokuValidator", "{AAC37C83-CA86-4F88-BB71-B990B295DC27}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SudokuValidator.Tests", "SudokuValidator.Tests\SudokuValidator.Tests.csproj", "{1B68C357-36E6-4B7C-8F82-D1A3E4A8CFCE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SudokuValidator.Tests", "SudokuValidator.Tests\SudokuValidator.Tests.csproj", "{1B68C357-36E6-4B7C-8F82-D1A3E4A8CFCE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "FileLogger", "FileLogger", "{8F1112D0-53B7-4368-813B-33B31DF9BE85}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileLoggerKata", "FileLoggerKata\FileLoggerKata.csproj", "{13EEA26C-8BE1-488A-99AE-398516F38E96}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -79,6 +83,10 @@ Global
 		{1B68C357-36E6-4B7C-8F82-D1A3E4A8CFCE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1B68C357-36E6-4B7C-8F82-D1A3E4A8CFCE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1B68C357-36E6-4B7C-8F82-D1A3E4A8CFCE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{13EEA26C-8BE1-488A-99AE-398516F38E96}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{13EEA26C-8BE1-488A-99AE-398516F38E96}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{13EEA26C-8BE1-488A-99AE-398516F38E96}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{13EEA26C-8BE1-488A-99AE-398516F38E96}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -98,6 +106,8 @@ Global
 		{D083B58A-3490-4923-B9CE-B422952592DD} = {539A5C6C-632C-401C-881E-25A1A7A89A16}
 		{AAC37C83-CA86-4F88-BB71-B990B295DC27} = {570F388E-1184-4922-8350-FE744F555683}
 		{1B68C357-36E6-4B7C-8F82-D1A3E4A8CFCE} = {AAC37C83-CA86-4F88-BB71-B990B295DC27}
+		{8F1112D0-53B7-4368-813B-33B31DF9BE85} = {881E555C-75FD-40A0-B853-D17A5AE0E459}
+		{13EEA26C-8BE1-488A-99AE-398516F38E96} = {8F1112D0-53B7-4368-813B-33B31DF9BE85}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7A03D66B-DA61-4DA1-AEDF-0C3958748303}
