@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Intrinsics.X86;
 using System.Text;
 using System.Threading.Tasks;
 using ZombieSurvivor.Application.Contracts;
@@ -9,11 +10,14 @@ namespace ZombieSurvivor.Application.Classes
 {
     public class SkillTree
     {
-        public Skill YellowSkill { get; set; } = new Skill()
+        public List<Skill> YellowSkills { get; set; } = new List<Skill>
         {
-            Name = "+1 Action",
-            Description = "You can take an additional action on your turn",
-            Id = 1,
+            new Skill()
+            {
+                Name = "+1 Action",
+                Description = "You can take an additional action on your turn",
+                Id = 1,
+            }
         };
 
         public List<Skill> OrangeSkillList { get; set; } = new List<Skill>
@@ -38,18 +42,17 @@ namespace ZombieSurvivor.Application.Classes
 
         public List<Skill> GetAvailableSkills(ISurvivor.Levels level)
         {
-            if(level == ISurvivor.Levels.Orange)
+
+            switch (level)
             {
-                return OrangeSkillList.Where(p=>!p.Activated).ToList();
+                case ISurvivor.Levels.Yellow: return YellowSkills;
+                case ISurvivor.Levels.Orange: return OrangeSkillList;
+                case ISurvivor.Levels.Red: return RedSkillList;
+                default: return new List<Skill>();
             }
-            else if(level == ISurvivor.Levels.Red)
-            {
-                return RedSkillList.Where(p => !p.Activated).ToList();
-            }
-            else
-            {
-                return null;
-            }
+            
+            
+           
         }
 
 

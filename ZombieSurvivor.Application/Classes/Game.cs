@@ -18,27 +18,12 @@ namespace ZombieSurvivor.Application.Classes
             Survivors = new List<Survivor>();
             GameLevel = ISurvivor.Levels.Blue;
             GameHistory.Add($"Began Game at {DateTime.Now}");
-            WeakReferenceMessenger.Default.Register<SurvivorMessage>(this, (r, m) =>
-            {
-                if (Survivors.FirstOrDefault(q => q.Id == m.SenderId) != null)
-                {
-                    GameHistory.Add(m.Message);
-                }
-                
-            });
-            WeakReferenceMessenger.Default.Register<SkillTreeMessage>(this, (r, m) =>
-            {
-                if (Survivors.FirstOrDefault(q => q.Id == m.SenderId) != null)
-                {
-                    var finalMessage = m.Message;
-                    foreach(var skill in m.AvailableSkills)
-                    {
-                        finalMessage += $"\n {skill.Name}: {skill.Description}";
-                    }
-                    GameHistory.Add(finalMessage);
-                }
-            });
+            RegisterMessages();
+            
         }
+
+       
+
         public Guid Id { get; set; }
         public ISurvivor.Levels GameLevel { get; set; }
         public bool GameOver { get; set; } = false;
@@ -105,7 +90,30 @@ namespace ZombieSurvivor.Application.Classes
             GameHistory.Add($"Game has ended at {DateTime.Now}");
             throw new GameOver(GameHistory);
         }
-       
+        private void RegisterMessages()
+        {
+            WeakReferenceMessenger.Default.Register<SurvivorMessage>(this, (r, m) =>
+            {
+                if (Survivors.FirstOrDefault(q => q.Id == m.SenderId) != null)
+                {
+                    GameHistory.Add(m.Message);
+                }
+
+            });
+            WeakReferenceMessenger.Default.Register<SkillTreeMessage>(this, (r, m) =>
+            {
+                if (Survivors.FirstOrDefault(q => q.Id == m.SenderId) != null)
+                {
+                    var finalMessage = m.Message;
+                    foreach (var skill in m.AvailableSkills)
+                    {
+                        finalMessage += $"\n {skill.Name}: {skill.Description}";
+                    }
+                    GameHistory.Add(finalMessage);
+                }
+            });
+        }
+
         #endregion
     }
 }

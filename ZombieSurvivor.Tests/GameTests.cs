@@ -107,14 +107,14 @@ namespace ZombieSurvivor.Tests
         }
 
         [Theory]
-        [InlineData(6, "+1 Action")]
-        [InlineData(18, "1 Free Move Action")]
-        [InlineData(42, "Hoard")]
-        [InlineData(60, "1 Free Move Action")]
-        [InlineData(84, "Hoard")]
-        [InlineData(102, "1 Free Move Action")]
-        [InlineData(126, "Hoard")]
-        public void GameHistory_GivenLevelUps_GameHistoryContainsString(int experience, string checkString)
+        [InlineData(6, "+1 Action",4)]
+        [InlineData(18, "1 Free Move Action",7)]
+        [InlineData(42, "Hoard",10)]
+        [InlineData(60, "1 Free Move Action",11)]
+        [InlineData(84, "Hoard",12)]
+        [InlineData(102, "1 Free Move Action",13)]
+        [InlineData(126, "Hoard",14)]
+        public void GameHistory_GivenLevelUps_GameHistoryContainsString(int experience, string checkString, int historyIndex)
         {
             try
             {
@@ -126,7 +126,7 @@ namespace ZombieSurvivor.Tests
             }
             catch (GameOver ex)
             {
-                ex.History[4].ShouldContain(checkString);
+                ex.History[historyIndex].ShouldContain(checkString);
             }
             
         }

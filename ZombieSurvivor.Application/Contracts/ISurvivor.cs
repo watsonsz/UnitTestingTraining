@@ -10,21 +10,21 @@ namespace ZombieSurvivor.Application.Contracts
     public interface ISurvivor
     {
         #region Properties
-            public string Name { get; set; }
-            public bool isDead { get; set; }
-            public abstract int Wounds { get; set; }
-            public abstract int ActionsTaken { get; set; }
-            public List<Equipment> ReserveEquipment { get; set; }
-            public abstract Equipment LeftHandEquipped { get; set; }
-            public abstract Equipment RightHandEquipped { get; set; }
+        public string Name { get; set; }
+        public bool isDead { get; set; }
+        public abstract int Wounds { get; set; }
+        public abstract int ActionsTaken { get; set; }
+        public List<Equipment> ReserveEquipment { get; set; }
+        public abstract Equipment LeftHandEquipped { get; set; }
+        public abstract Equipment RightHandEquipped { get; set; }
         Dictionary<int, Levels> LevelValues { get; set; }
         #endregion
 
         public enum ActionTypes
-                {
-                    PickUp,
-                    Equip
-                }
+        {
+            PickUp,
+            Equip
+        }
         public enum Hands
         {
             LeftHand,
@@ -40,9 +40,8 @@ namespace ZombieSurvivor.Application.Contracts
 
         }
 
-        public static Dictionary<int, Levels> levelValues = new Dictionary<int, Levels>
+        public static Dictionary<int, Levels> TalentThresholds = new Dictionary<int, Levels>
         {
-            {0, Levels.Blue},
             {6, Levels.Yellow},
             {18, Levels.Orange},
             {42, Levels.Red},
@@ -53,11 +52,11 @@ namespace ZombieSurvivor.Application.Contracts
         };
         #region Methods
         public Task EquipItem(Hands Hand, Equipment equipment);
-            public Task PickUpItem(Equipment equipment);
-            public Task DiscardItem(int ListIndex);
+        public Task PickUpItem(Equipment equipment);
+        public Task DiscardItem(int ListIndex);
         #endregion
 
 
     }
-    
+
 }

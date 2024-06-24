@@ -7,87 +7,58 @@ using System.Threading.Tasks;
 
 namespace FileLoggerKata
 {
+    public interface ISystemDateTime
+    {
+        public DateTime Now();
+    }
+
     public class Logger
     {
         //realistically this would be a dependency-injected File Handler
 
         public string FileLocation { get; set; }
         public DirectoryInfo FileRoot { get; set; }
-        public Logger()
+        private readonly IFileWriter _writer;
+        private const string WEEKEND_FILENAME = "weekend.txt";
+        private readonly ISystemDateTime _dateTime;
+        public Logger(IFileWriter writer, ISystemDateTime systemDateTime)
         {
             FileRoot = Directory.GetParent(Directory.GetCurrentDirectory());
-
-            
+            _writer = writer;
+            _dateTime = systemDateTime;
         }
-        public async Task Log(string message)
+        public bool Log(string message)
         {
-            string todaysLogFile;
-            if (DateTime.Now.DayOfWeek == DayOfWeek.Saturday || DateTime.Now.DayOfWeek == DayOfWeek.Sunday)
+            var currentDate = _dateTime.Now();
+            string fileName = GetFileName(currentDate);
+
+            FileLocation = Path.Combine(FileRoot.ToString(), fileName);
+            if(!_writer.FileExists(fileName))
             {
-                todaysLogFile = "weekend.txt";
-                
+                _writer.CreateFile(fileName);
+            }
+
+            return _writer.WriteFile(FileLocation, message);
+        }
+
+        public string GetFileName(DateTime currentDate)
+        {
+            if(currentDate.DayOfWeek == DayOfWeek.Saturday || currentDate.DayOfWeek == DayOfWeek.Sunday)
+            {
+                FileLocation = Path.Combine(FileRoot.ToString(), WEEKEND_FILENAME);
+                var helper = new WeekendHelper(_writer, _dateTime);
+                helper.HandleWeekendFile(FileLocation, FileRoot);
+                return WEEKEND_FILENAME;
             }
             else
             {
-                todaysLogFile = $"{DateTime.Now.ToString("yyyyMMdd")}.txt";
+                return $"{currentDate.ToString("yyyyMMdd")}.txt";
             }
-
-            FileLocation = Path.Combine(FileRoot.ToString(), todaysLogFile);
-
-            if (!File.Exists(FileLocation))
-            {
-                File.Create(FileLocation);
-            }
-
-            using (var writer = new StreamWriter(FileLocation))
-            {
-                var logString = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + message;
-                await writer.WriteLineAsync(logString);
-            };
-            
         }
 
-        public async Task Log(string message, DateTime alternateDateTime)
-        {
-            string todaysLogFile;
-            bool isWeekend = false;
-            if(DateTime.Now.DayOfWeek == DayOfWeek.Saturday || DateTime.Now.DayOfWeek == DayOfWeek.Sunday)
-            {
-                todaysLogFile = "weekend.txt";
-                isWeekend = true;
-            }
-            else
-            {
-                todaysLogFile = $"{alternateDateTime.ToString("yyyyMMdd")}.txt";
-            }
-            
-            FileLocation = Path.Combine(FileRoot.ToString(), todaysLogFile);
-            //TODO
-            if (!File.Exists(FileLocation) && !isWeekend)
-            {
-                File.Create(FileLocation);
-            }
-            else if (File.Exists(FileLocation) && isWeekend)
-            {
-                CacheWeekendFile();
-                File.Create(FileLocation);
-            }
-            
+       
 
-            using (var writer = new StreamWriter(FileLocation))
-            {
-                var logString = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + message;
-                await writer.WriteLineAsync(logString);
-            };
-
-        }
-
-        private void CacheWeekendFile()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Delete()
+        public async Task Delete()
         {
             File.Delete(FileLocation);
         }
